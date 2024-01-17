@@ -1,21 +1,8 @@
-# React Big Calendar
+# React + Vite
 
-### Props to get started
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-1. events
+Currently, two official plugins are available:
 
-### Props to gain control of calendar
-
-1. views, view
-2. date
-3. toolbar
-4. max, min
-
-### Props for customizing calendar
-
-2. formats
-3. Custom styling
-
-### Advanced Props
-
-1. components
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
