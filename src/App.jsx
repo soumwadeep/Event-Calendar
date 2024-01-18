@@ -12,7 +12,6 @@ const locales = {
   "en-US": import("date-fns/locale/en-US"),
 };
 
-
 const localizer = dateFnsLocalizer({
   format,
   parse,
@@ -25,8 +24,8 @@ const events = [
   {
     title: "Big Meeting",
     allDay: true,
-    start: new Date(2024, 1, 0),
-    end: new Date(2024, 1, 0),
+    start: new Date(2024, 1, 2),
+    end: new Date(2024, 1, 4),
   },
   {
     title: "Vacation",
@@ -50,12 +49,6 @@ const App = () => {
       const d2 = new Date(newEvent.start);
       const d3 = new Date(allEvents[i].end);
       const d4 = new Date(newEvent.end);
-      /*
-          console.log(d1 <= d2);
-          console.log(d2 <= d3);
-          console.log(d1 <= d4);
-          console.log(d4 <= d3);
-            */
 
       if ((d1 <= d2 && d2 <= d3) || (d1 <= d4 && d4 <= d3)) {
         alert("CLASH");
