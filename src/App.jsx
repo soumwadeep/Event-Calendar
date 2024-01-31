@@ -1,5 +1,4 @@
-// MyCalendar.jsx
-import React, { useState } from "react";
+import { useState } from "react";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import moment from "moment";
@@ -11,7 +10,7 @@ const initialEvents = [
   {
     id: 1,
     title: "Short Event",
-    start: new Date(2024, 0, 31, 9, 0),
+    start: new Date(2024, 0, 31, 9, 0), // Year, Month (0-based), Day, Hour, Minute
     end: new Date(2024, 0, 31, 10, 0),
     type: "short-event",
   },
@@ -61,7 +60,7 @@ const initialEvents = [
 
 const MyCalendar = () => {
   const [events, setEvents] = useState(initialEvents);
-  const [showModal, setShowModal] = React.useState(false);
+  const [showModal, setShowModal] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
 
   const handleEventClick = (event) => {
