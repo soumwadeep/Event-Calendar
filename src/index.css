@@ -1,5 +1,6 @@
 body {
   text-align: center;
+  background-color: whitesmoke !important;
 }
 .modal {
   display: block;
@@ -78,4 +79,25 @@ body {
 .rbc-selected {
   background-color: #2980b9;
   color: #fff;
+}
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+img {
+  width: 100%;
+  height: auto;
+}
+.logo {
+  width: 40px;
+  height: auto;
+}
+.links {
+  text-decoration: none;
+  color: black;
+  background-color: aquamarine;
+  padding: 10px;
+  border-radius: 5px;
+  font-weight: bold;
 }
