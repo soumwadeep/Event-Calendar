@@ -5,7 +5,7 @@ const Modal = ({ onClose }) => {
         <span className="close" onClick={onClose}>
           &times;
         </span>
-        <p>This is your modal content. Customize it as needed.</p>
+        <p>Under Maintainance!</p>
       </div>
     </div>
   );
