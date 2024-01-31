@@ -1,100 +1,158 @@
-import format from "date-fns/format";
-import getDay from "date-fns/getDay";
-import parse from "date-fns/parse";
-import startOfWeek from "date-fns/startOfWeek";
+// MyCalendar.jsx
 import React, { useState } from "react";
-import { Calendar, dateFnsLocalizer } from "react-big-calendar";
+import { Calendar, momentLocalizer } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
-import DatePicker from "react-datepicker";
-import "react-datepicker/dist/react-datepicker.css";
+import moment from "moment";
+import Modal from "./Modal";
 
-const locales = {
-  "en-US": import("date-fns/locale/en-US"),
-};
+const localizer = momentLocalizer(moment);
 
-const localizer = dateFnsLocalizer({
-  format,
-  parse,
-  startOfWeek,
-  getDay,
-  locales,
-});
-
-const events = [
+const initialEvents = [
   {
-    title: "Big Meeting",
-    allDay: true,
-    start: new Date(2024, 1, 2),
-    end: new Date(2024, 1, 4),
+    id: 1,
+    title: "Short Event",
+    start: new Date(2024, 0, 31, 9, 0),
+    end: new Date(2024, 0, 31, 10, 0),
+    type: "short-event",
   },
   {
-    title: "Vacation",
-    start: new Date(2024, 1, 7),
-    end: new Date(2024, 1, 10),
+    id: 2,
+    title: "Full Day Event",
+    start: new Date(2024, 0, 31),
+    end: new Date(2024, 0, 31),
+    type: "full-day-event",
   },
   {
-    title: "Conference",
-    start: new Date(2024, 1, 20),
-    end: new Date(2024, 1, 23),
+    id: 3,
+    title: "Multi-Day Event",
+    start: new Date(2024, 0, 31),
+    end: new Date(2024, 1, 7),
+    type: "multi-day-event",
+  },
+  {
+    id: 4,
+    title: "Overlapping Event 1",
+    start: new Date(2024, 0, 31, 11, 0),
+    end: new Date(2024, 0, 31, 12, 0),
+    type: "short-event",
+  },
+  {
+    id: 5,
+    title: "Overlapping Event 2",
+    start: new Date(2024, 0, 31, 11, 30),
+    end: new Date(2024, 0, 31, 12, 30),
+    type: "full-day-event",
+  },
+  {
+    id: 6,
+    title: "Week-Long Event",
+    start: new Date(2024, 0, 31),
+    end: new Date(2024, 1, 7),
+    type: "self-paced",
+  },
+  {
+    id: 7,
+    title: "VILT Session",
+    start: new Date(2024, 0, 31, 14, 0),
+    end: new Date(2024, 0, 31, 16, 0),
+    type: "vilt",
   },
 ];
 
-const App = () => {
-  const [newEvent, setNewEvent] = useState({ title: "", start: "", end: "" });
-  const [allEvents, setAllEvents] = useState(events);
+const MyCalendar = () => {
+  const [events, setEvents] = useState(initialEvents);
+  const [showModal, setShowModal] = React.useState(false);
+  const [selectedEvent, setSelectedEvent] = useState(null);
 
-  function handleAddEvent() {
-    for (let i = 0; i < allEvents.length; i++) {
-      const d1 = new Date(allEvents[i].start);
-      const d2 = new Date(newEvent.start);
-      const d3 = new Date(allEvents[i].end);
-      const d4 = new Date(newEvent.end);
+  const handleEventClick = (event) => {
+    console.log("Event Clicked:", event);
+    setShowModal(true);
+  };
 
-      if ((d1 <= d2 && d2 <= d3) || (d1 <= d4 && d4 <= d3)) {
-        alert("CLASH");
+  const handleModalClose = () => {
+    setShowModal(false);
+    setSelectedEvent(null);
+  };
+
+  const handleCreateEvent = (newEvent) => {
+    setEvents([...events, newEvent]);
+    handleModalClose();
+  };
+
+  const handleUpdateEvent = (updatedEvent) => {
+    const updatedEvents = events.map((event) =>
+      event.id === updatedEvent.id ? updatedEvent : event
+    );
+    setEvents(updatedEvents);
+    handleModalClose();
+  };
+
+  const handleDeleteEvent = () => {
+    const updatedEvents = events.filter(
+      (event) => event.id !== selectedEvent.id
+    );
+    setEvents(updatedEvents);
+    handleModalClose();
+  };
+
+  const eventStyleGetter = (event, start, end, isSelected) => {
+    let backgroundColor = "";
+    switch (event.type) {
+      case "short-event":
+        backgroundColor = "blue";
         break;
-      }
+      case "full-day-event":
+        backgroundColor = "green";
+        break;
+      case "multi-day-event":
+        backgroundColor = "orange";
+        break;
+      case "self-paced":
+        backgroundColor = "purple";
+        break;
+      case "vilt":
+        backgroundColor = "red";
+        break;
+      default:
+        backgroundColor = "gray";
     }
 
-    setAllEvents([...allEvents, newEvent]);
-  }
+    const style = {
+      backgroundColor,
+      borderRadius: "0px",
+      opacity: 0.8,
+      color: "white",
+      border: "0px",
+      display: "block",
+    };
+    return {
+      style,
+    };
+  };
 
   return (
-    <div className="App">
-      <h1>Calendar</h1>
-      <h2>Add New Event</h2>
-      <div>
-        <input
-          type="text"
-          placeholder="Add Title"
-          style={{ width: "20%", marginRight: "10px" }}
-          value={newEvent.title}
-          onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}
-        />
-        <DatePicker
-          placeholderText="Start Date"
-          style={{ marginRight: "10px" }}
-          selected={newEvent.start}
-          onChange={(start) => setNewEvent({ ...newEvent, start })}
-        />
-        <DatePicker
-          placeholderText="End Date"
-          selected={newEvent.end}
-          onChange={(end) => setNewEvent({ ...newEvent, end })}
-        />
-        <button stlye={{ marginTop: "10px" }} onClick={handleAddEvent}>
-          Add Event
-        </button>
-      </div>
+    <div>
       <Calendar
         localizer={localizer}
-        events={allEvents}
+        events={events}
         startAccessor="start"
         endAccessor="end"
-        style={{ height: 500, margin: "50px" }}
+        defaultView="week"
+        views={["week", "day", "month", "agenda"]}
+        eventPropGetter={eventStyleGetter}
+        onSelectEvent={handleEventClick}
       />
+      {showModal && (
+        <Modal
+          event={selectedEvent}
+          onClose={handleModalClose}
+          onCreate={handleCreateEvent}
+          onUpdate={handleUpdateEvent}
+          onDelete={handleDeleteEvent}
+        />
+      )}
     </div>
   );
 };
 
-export default App;
+export default MyCalendar;
