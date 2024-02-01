@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { auth, db } from "../components/FirebaseConfig";
 import Swal from "sweetalert2";
-import { useNavigate } from "react-router-dom";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
@@ -14,7 +13,6 @@ const Login = () => {
     document.description = "Login To Event Scheduler";
   }, []);
 
-  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSigningIn, setIsSigningIn] = useState(false);
