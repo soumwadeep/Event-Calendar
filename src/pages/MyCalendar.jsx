@@ -1,9 +1,11 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { onAuthStateChanged } from "firebase/auth";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import moment from "moment";
-import Modal from "../components/Modal";
+// import Modal from "../components/Modal";
+import { auth } from "../components/FirebaseConfig";
 
 const localizer = momentLocalizer(moment);
 
@@ -22,7 +24,7 @@ const initialEvents = [
     start: new Date(2024, 0, 31),
     end: new Date(2024, 0, 31),
     type: "full-day-event",
-    goto: "/CreateEvent2",
+    goto: "/CreateEvent",
   },
   {
     id: 3,
@@ -70,6 +72,15 @@ const MyCalendar = () => {
   useEffect(() => {
     document.title = "Event Scheduler";
   }, []);
+
+  const [userEmail, setUserEmail] = useState("");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      setUserEmail(user.email);
+      setIsLoggedIn(true);
+    }
+  });
 
   const [events, setEvents] = useState(initialEvents);
   const navigate = useNavigate();
@@ -123,18 +134,22 @@ const MyCalendar = () => {
 
   return (
     <div>
-      <Calendar
-        localizer={localizer}
-        events={events}
-        startAccessor="start"
-        endAccessor="end"
-        defaultView="week"
-        views={["week", "day", "month", "agenda"]}
-        eventPropGetter={eventStyleGetter}
-        onSelectEvent={handleEventClick}
-      />
-      {showModal && <Modal event={selectedEvent} onClose={handleModalClose} />}
+      {isLoggedIn ? (
+        ""
+      ) : (
+        <Calendar
+          localizer={localizer}
+          events={events}
+          startAccessor="start"
+          endAccessor="end"
+          defaultView="week"
+          views={["week", "day", "month", "agenda"]}
+          eventPropGetter={eventStyleGetter}
+          onSelectEvent={handleEventClick}
+        />
+      )}
     </div>
+    // {showModal && <Modal event={selectedEvent} onClose={handleModalClose} />}
   );
 };
 
