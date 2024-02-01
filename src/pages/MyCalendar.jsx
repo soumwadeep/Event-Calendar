@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Calendar, momentLocalizer } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import moment from "moment";
@@ -66,13 +67,18 @@ const initialEvents = [
 ];
 
 const MyCalendar = () => {
+  useEffect(() => {
+    document.title = "Event Scheduler";
+  }, []);
+
   const [events, setEvents] = useState(initialEvents);
+  const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
   const handleEventClick = (event) => {
     console.log("Event Clicked:", event);
     // setShowModal(true);
-    window.location.replace(`${event.goto}`);
+    navigate(`${event.goto}`);
   };
 
   const handleModalClose = () => {

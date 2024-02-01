@@ -1,6 +1,7 @@
 body {
   text-align: center;
   background-color: whitesmoke !important;
+  padding: 10px;
 }
 .nav {
   background: whitesmoke;
@@ -103,8 +104,17 @@ img {
   border-radius: 5px;
   text-decoration: none;
   color: black !important;
+  margin-right: 10px;
 }
 .logo {
   width: 30px;
   height: auto;
+}
+.login-form {
+  max-width: 600px;
+  background: wheat;
+  padding: 30px;
+  border-radius: 30px;
+  margin-top: 10px;
+  font-weight: bold;
 }
