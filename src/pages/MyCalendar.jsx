@@ -13,6 +13,7 @@ const initialEvents = [
     start: new Date(2024, 0, 31, 9, 0), // Year, Month (0-based), Day, Hour, Minute
     end: new Date(2024, 0, 31, 10, 0),
     type: "short-event",
+    goto: "/CreateEvent",
   },
   {
     id: 2,
@@ -20,6 +21,7 @@ const initialEvents = [
     start: new Date(2024, 0, 31),
     end: new Date(2024, 0, 31),
     type: "full-day-event",
+    goto: "/CreateEvent2",
   },
   {
     id: 3,
@@ -27,6 +29,7 @@ const initialEvents = [
     start: new Date(2024, 0, 31),
     end: new Date(2024, 1, 7),
     type: "multi-day-event",
+    goto: "/CreateEvent",
   },
   {
     id: 4,
@@ -34,6 +37,7 @@ const initialEvents = [
     start: new Date(2024, 0, 31, 11, 0),
     end: new Date(2024, 0, 31, 12, 0),
     type: "short-event",
+    goto: "/CreateEvent",
   },
   {
     id: 5,
@@ -41,6 +45,7 @@ const initialEvents = [
     start: new Date(2024, 0, 31, 11, 30),
     end: new Date(2024, 0, 31, 12, 30),
     type: "full-day-event",
+    goto: "/CreateEvent",
   },
   {
     id: 6,
@@ -48,6 +53,7 @@ const initialEvents = [
     start: new Date(2024, 0, 31),
     end: new Date(2024, 1, 7),
     type: "self-paced",
+    goto: "/CreateEvent",
   },
   {
     id: 7,
@@ -55,6 +61,7 @@ const initialEvents = [
     start: new Date(2024, 0, 31, 14, 0),
     end: new Date(2024, 0, 31, 16, 0),
     type: "vilt",
+    goto: "/CreateEvent",
   },
 ];
 
@@ -62,36 +69,15 @@ const MyCalendar = () => {
   const [events, setEvents] = useState(initialEvents);
   const [showModal, setShowModal] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
-
   const handleEventClick = (event) => {
     console.log("Event Clicked:", event);
-    setShowModal(true);
+    // setShowModal(true);
+    window.location.replace(`${event.goto}`);
   };
 
   const handleModalClose = () => {
     setShowModal(false);
     setSelectedEvent(null);
-  };
-
-  const handleCreateEvent = (newEvent) => {
-    setEvents([...events, newEvent]);
-    handleModalClose();
-  };
-
-  const handleUpdateEvent = (updatedEvent) => {
-    const updatedEvents = events.map((event) =>
-      event.id === updatedEvent.id ? updatedEvent : event
-    );
-    setEvents(updatedEvents);
-    handleModalClose();
-  };
-
-  const handleDeleteEvent = () => {
-    const updatedEvents = events.filter(
-      (event) => event.id !== selectedEvent.id
-    );
-    setEvents(updatedEvents);
-    handleModalClose();
   };
 
   const eventStyleGetter = (event, start, end, isSelected) => {
@@ -141,15 +127,7 @@ const MyCalendar = () => {
         eventPropGetter={eventStyleGetter}
         onSelectEvent={handleEventClick}
       />
-      {showModal && (
-        <Modal
-          event={selectedEvent}
-          onClose={handleModalClose}
-          onCreate={handleCreateEvent}
-          onUpdate={handleUpdateEvent}
-          onDelete={handleDeleteEvent}
-        />
-      )}
+      {showModal && <Modal event={selectedEvent} onClose={handleModalClose} />}
     </div>
   );
 };
