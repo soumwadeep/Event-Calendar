@@ -1,3 +1,5 @@
+import { collection, query, getDocs } from "firebase/firestore";
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { onAuthStateChanged } from "firebase/auth";
@@ -5,7 +7,7 @@ import { Calendar, momentLocalizer } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import moment from "moment";
 // import Modal from "../components/Modal";
-import { auth } from "../components/FirebaseConfig";
+import { auth, db } from "../components/FirebaseConfig";
 
 const localizer = momentLocalizer(moment);
 
@@ -75,6 +77,7 @@ const MyCalendar = () => {
 
   const [userEmail, setUserEmail] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
   onAuthStateChanged(auth, (user) => {
     if (user) {
       setUserEmail(user.email);
@@ -86,16 +89,55 @@ const MyCalendar = () => {
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [selectedEvent, setSelectedEvent] = useState(null);
-  const handleEventClick = (event) => {
-    console.log("Event Clicked:", event);
-    // setShowModal(true);
-    navigate(`${event.goto}`);
+
+  const fetchEvents = async () => {
+    try {
+      onAuthStateChanged(auth, async (user) => {
+        if (user) {
+          setUserEmail(user.email);
+          // Fetching All Events
+          const EventsQuery = query(collection(db, "Events"));
+          const eventsSnapshot = await getDocs(EventsQuery);
+          const eventData = [];
+          eventsSnapshot.forEach((doc) => {
+            // Setting ID Along With Data
+            eventData.push({ id: doc.id, ...doc.data() });
+          });
+
+          // Filtering Events for Current User
+          const currentUserEvents = eventData
+            .filter((event) => event.EventCreatedBy === user.email)
+            .sort(
+              (a, b) => b.EventCreatedAt.seconds - a.EventCreatedAt.seconds
+            );
+          setEvents(currentUserEvents);
+          // setFetchedEvents(currentUserEvents);
+        } else {
+          console.log("We Were Unable To Fetch Events!");
+        }
+      });
+    } catch (error) {
+      console.error("Error Fetching Data:", error);
+    }
   };
 
-  const handleModalClose = () => {
-    setShowModal(false);
-    setSelectedEvent(null);
+  // console.log(events);
+
+  useEffect(() => {
+    fetchEvents();
+  }, []);
+
+  const handleEventClick = (event) => {
+    // console.log("Event Clicked:", event);
+    // setShowModal(true);
+    window.open(`//${event.goto}`,"_blank");
+    // console.log("Link:",event.goto)
   };
+
+  // const handleModalClose = () => {
+  //   setShowModal(false);
+  //   setSelectedEvent(null);
+  // };
 
   const eventStyleGetter = (event, start, end, isSelected) => {
     let backgroundColor = "";
@@ -135,7 +177,20 @@ const MyCalendar = () => {
   return (
     <div>
       {isLoggedIn ? (
-        ""
+        <Calendar
+          localizer={localizer}
+          events={events}
+          startAccessor={(event) =>
+            event.start ? new Date(event.start.seconds * 1000) : null
+          }
+          endAccessor={(event) =>
+            event.end ? new Date(event.end.seconds * 1000) : null
+          }
+          defaultView="week"
+          views={["week", "day", "month", "agenda"]}
+          eventPropGetter={eventStyleGetter}
+          onSelectEvent={handleEventClick}
+        />
       ) : (
         <Calendar
           localizer={localizer}

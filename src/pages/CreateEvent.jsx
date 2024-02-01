@@ -43,11 +43,11 @@ const CreateEvent = () => {
       const start = moment.utc(eventStartDate).toDate();
       const end = moment.utc(eventEndDate).toDate();
       const eventData = {
-        EventName: eventName,
-        EventType: eventType,
-        EventStartDate: start,
-        EventEndDate: end,
-        EventLink: eventLink,
+        title: eventName,
+        type: eventType,
+        start: start,
+        end: end,
+        goto: eventLink,
         EventCreatedBy: userEmail,
         EventCreatedAt: serverTimestamp(),
       };
@@ -67,6 +67,9 @@ const CreateEvent = () => {
       <center>
         <form className="login-form">
           <div className="mb-3">
+            <label className="form-label" htmlFor="Event Name">
+              Event Name
+            </label>
             <input
               type="text"
               className="form-control"
@@ -77,10 +80,14 @@ const CreateEvent = () => {
             />
           </div>
           <div className="mb-3">
+            <label className="form-label" htmlFor="Event Link">
+              Choose Event Type
+            </label>
             <select
               className="form-select"
               value={eventType}
               onChange={(e) => setEventType(e.target.value)}
+              defaultValue="self-paced"
             >
               <option selected>Choose Event Type</option>
               <option value="short-event">Short Event</option>
@@ -90,27 +97,40 @@ const CreateEvent = () => {
               <option value="vilt">VILT</option>
             </select>
           </div>
+          <label className="form-label" htmlFor="Event Start Date">
+            Event Start Date
+          </label>
           <div className="mb-3">
             <DatePicker
               showTimeSelect
+              showIcon
+              isClearable
               selected={eventStartDate}
               onChange={(date) => setEventStartDate(date)}
               dateFormat="Pp"
             />
           </div>
+          <label className="form-label" htmlFor="Event End Date">
+            Event End Date
+          </label>
           <div className="mb-3">
             <DatePicker
               showTimeSelect
+              showIcon
+              isClearable
               selected={eventEndDate}
               onChange={(date) => setEventEndDate(date)}
               dateFormat="Pp"
             />
           </div>
           <div className="mb-3">
+            <label className="form-label" htmlFor="Event Link">
+              Event Link
+            </label>
             <input
               type="text"
               className="form-control"
-              placeholder="Enter Event Link"
+              placeholder="www.example.com"
               required
               value={eventLink}
               onChange={(e) => setEventLink(e.target.value)}
