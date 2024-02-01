@@ -22,6 +22,9 @@ const Login = () => {
     e.preventDefault();
     setIsSigningUp(true);
     try {
+      if (email === "" && password === "") {
+        throw new Error("Please Fill All The Input Fields!");
+      }
       // Auth
       await createUserWithEmailAndPassword(auth, email, password);
       //   DB
@@ -31,7 +34,6 @@ const Login = () => {
         RegisteredAt: serverTimestamp(),
       };
       await setDoc(newUserRef, data);
-
       Swal.fire(
         "Signed Up Successfully!",
         `Welcome ${email} To Event Scheduler!`,
@@ -51,6 +53,9 @@ const Login = () => {
     e.preventDefault();
     setIsSigningIn(true);
     try {
+      if (email === "" && password === "") {
+        throw new Error("Please Fill All The Input Fields!");
+      }
       await signInWithEmailAndPassword(auth, email, password);
       Swal.fire(
         "Signed In Successfully!",
@@ -63,7 +68,7 @@ const Login = () => {
     } finally {
       setEmail("");
       setPassword("");
-      setIsSigningUp(false);
+      setIsSigningIn(false);
     }
   };
 
@@ -79,9 +84,9 @@ const Login = () => {
             <input
               type="email"
               className="form-control"
-              placeholder="abc@example.com"
-              aria-describedby="emailHelp"
+              placeholder="Enter A Valid Email"
               required
+              value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
             <div id="emailHelp" className="form-text">
@@ -96,20 +101,12 @@ const Login = () => {
               type="password"
               minLength={8}
               className="form-control"
-              placeholder="abc@defg"
+              placeholder="Enter Your Password"
               required
+              value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
           </div>
-          <button
-            type="submit"
-            className="btn btn-warning fw-bold"
-            onClick={handleRegister}
-            disabled={isSigningUp}
-          >
-            {isSigningUp ? "Registering..." : "Register"}
-          </button>
-          &nbsp;
           <button
             type="submit"
             className="btn btn-success fw-bold"
@@ -117,6 +114,15 @@ const Login = () => {
             disabled={isSigningIn}
           >
             {isSigningIn ? "Logging In..." : "Login"}
+          </button>
+          &nbsp;
+          <button
+            type="submit"
+            className="btn btn-warning fw-bold"
+            onClick={handleRegister}
+            disabled={isSigningUp}
+          >
+            {isSigningUp ? "Registering..." : "Register"}
           </button>
         </form>
       </center>

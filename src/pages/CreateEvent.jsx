@@ -1,6 +1,5 @@
 import { onAuthStateChanged } from "firebase/auth";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { auth } from "../components/FirebaseConfig";
 const CreateEvent = () => {
@@ -9,7 +8,6 @@ const CreateEvent = () => {
     document.description = "Create An Event With Event Scheduler";
   }, []);
 
-  const navigate = useNavigate();
   const [userEmail, setUserEmail] = useState("");
   onAuthStateChanged(auth, (user) => {
     if (user) {
@@ -20,7 +18,7 @@ const CreateEvent = () => {
         "Please Login To Create An Event.",
         "error"
       );
-      navigate("/Login");
+      window.location.replace("/Login");
     }
   });
 
